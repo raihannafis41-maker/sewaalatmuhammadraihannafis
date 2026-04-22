@@ -1,0 +1,241 @@
+KASIR_CAFE_AND_RESTO
+│
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │
+│   │   │   ├── Auth/
+│   │   │   │   ├── LoginController.php
+│   │   │   │   ├── RegisterController.php
+│   │   │   │   ├── LogoutController.php
+│   │   │   │   ├── ForgotPasswordController.php
+│   │   │   │   └── LoginHistoryController.php
+│   │   │   │
+│   │   │   ├── Dashboard/
+│   │   │   │   ├── DashboardAdminController.php
+│   │   │   │   ├── DashboardKasirController.php
+│   │   │   │   ├── DashboardOwnerController.php
+│   │   │   │   └── DashboardWaiterController.php
+│   │   │   │
+│   │   │   ├── Master/
+│   │   │   │   ├── UserController.php
+│   │   │   │   ├── RoleController.php
+│   │   │   │   ├── MenuController.php
+│   │   │   │   ├── KategoriMenuController.php
+│   │   │   │   ├── MejaController.php
+│   │   │   │   ├── PelangganController.php
+│   │   │   │   ├── SupplierController.php
+│   │   │   │   ├── BahanBakuController.php
+│   │   │   │   ├── SatuanController.php
+│   │   │   │   ├── DiskonController.php
+│   │   │   │   └── PajakController.php
+│   │   │   │
+│   │   │   ├── Transaksi/
+│   │   │   │   ├── OrderController.php
+│   │   │   │   ├── OrderDetailController.php
+│   │   │   │   ├── PembayaranController.php
+│   │   │   │   ├── MetodePembayaranController.php
+│   │   │   │   ├── RefundController.php
+│   │   │   │   ├── CetakStrukController.php
+│   │   │   │   ├── ShiftKasirController.php
+│   │   │   │   └── KasController.php
+│   │   │   │
+│   │   │   ├── Inventori/
+│   │   │   │   ├── StokMasukController.php
+│   │   │   │   ├── StokKeluarController.php
+│   │   │   │   ├── StokOpnameController.php
+│   │   │   │   └── RiwayatStokController.php
+│   │   │   │
+│   │   │   ├── Dapur/
+│   │   │   │   ├── AntrianPesananController.php
+│   │   │   │   ├── UpdateStatusPesananController.php
+│   │   │   │   └── RiwayatMasakController.php
+│   │   │   │
+│   │   │   ├── Waiter/
+│   │   │   │   ├── PelayananController.php
+│   │   │   │   ├── OrderMejaController.php
+│   │   │   │   └── StatusMejaController.php
+│   │   │   │
+│   │   │   ├── Customer/
+│   │   │   │   ├── CustomerMenuController.php
+│   │   │   │   ├── CustomerOrderController.php
+│   │   │   │   ├── TrackingOrderController.php
+│   │   │   │   └── QRMenuController.php
+│   │   │   │
+│   │   │   ├── Laporan/
+│   │   │   │   ├── LaporanPenjualanController.php
+│   │   │   │   ├── LaporanHarianController.php
+│   │   │   │   ├── LaporanBulananController.php
+│   │   │   │   ├── LaporanTahunanController.php
+│   │   │   │   ├── LaporanProfitController.php
+│   │   │   │   ├── LaporanKasController.php
+│   │   │   │   ├── LaporanStokController.php
+│   │   │   │   └── LaporanShiftController.php
+│   │   │   │
+│   │   │   └── Landing/
+│   │   │       ├── LandingController.php
+│   │   │       ├── PromoController.php
+│   │   │       └── TentangController.php
+│   │   │
+│   │   └── Middleware/
+│   │       ├── AuthMiddleware.php
+│   │       ├── RoleMiddleware.php
+│   │       ├── AdminMiddleware.php
+│   │       ├── KasirMiddleware.php
+│   │       ├── OwnerMiddleware.php
+│   │       ├── WaiterMiddleware.php
+│   │       └── DapurMiddleware.php
+│   │
+│   ├── Models/
+│   │   ├── User.php
+│   │   ├── Role.php
+│   │   ├── LoginHistory.php
+│   │   ├── Menu.php
+│   │   ├── KategoriMenu.php
+│   │   ├── Meja.php
+│   │   ├── Pelanggan.php
+│   │   ├── Supplier.php
+│   │   ├── BahanBaku.php
+│   │   ├── Satuan.php
+│   │   ├── Pajak.php
+│   │   ├── Diskon.php
+│   │   ├── Order.php
+│   │   ├── OrderDetail.php
+│   │   ├── Pembayaran.php
+│   │   ├── MetodePembayaran.php
+│   │   ├── Refund.php
+│   │   ├── ShiftKasir.php
+│   │   ├── Kas.php
+│   │   ├── StokMasuk.php
+│   │   ├── StokKeluar.php
+│   │   ├── StokOpname.php
+│   │   └── RiwayatStok.php
+│   │
+│   ├── Services/
+│   │   ├── HitungTotalService.php
+│   │   ├── GenerateKodeOrderService.php
+│   │   ├── GenerateKodePembayaranService.php
+│   │   ├── CetakStrukService.php
+│   │   ├── QRCodeService.php
+│   │   ├── StokService.php
+│   │   └── LaporanService.php
+│   │
+│   ├── Events/
+│   │   ├── OrderCreated.php
+│   │   └── PembayaranSuccess.php
+│   │
+│   ├── Listeners/
+│   │   ├── LogSuccessfulLogin.php
+│   │   ├── UpdateStokAfterOrder.php
+│   │   └── KirimNotifikasiDapur.php
+│   │
+│   └── Providers/
+│       ├── AppServiceProvider.php
+│       └── EventServiceProvider.php
+│
+├── database/
+│   ├── migrations/
+│   │   ├── create_users_table.php
+│   │   ├── create_roles_table.php
+│   │   ├── create_login_histories_table.php
+│   │   ├── create_kategori_menu_table.php
+│   │   ├── create_menu_table.php
+│   │   ├── create_meja_table.php
+│   │   ├── create_pelanggan_table.php
+│   │   ├── create_supplier_table.php
+│   │   ├── create_bahan_baku_table.php
+│   │   ├── create_satuan_table.php
+│   │   ├── create_diskon_table.php
+│   │   ├── create_pajak_table.php
+│   │   ├── create_orders_table.php
+│   │   ├── create_order_details_table.php
+│   │   ├── create_pembayaran_table.php
+│   │   ├── create_metode_pembayaran_table.php
+│   │   ├── create_shift_kasir_table.php
+│   │   ├── create_kas_table.php
+│   │   ├── create_refunds_table.php
+│   │   ├── create_stok_masuk_table.php
+│   │   ├── create_stok_keluar_table.php
+│   │   ├── create_stok_opname_table.php
+│   │   └── create_riwayat_stok_table.php
+│   │
+│   └── seeders/
+│       ├── UserSeeder.php
+│       ├── RoleSeeder.php
+│       ├── MenuSeeder.php
+│       ├── MejaSeeder.php
+│       └── MetodePembayaranSeeder.php
+│
+├── public/
+│   ├── dist/
+│   ├── plugins/
+│   ├── uploads/
+│   │   ├── menu/
+│   │   ├── pelanggan/
+│   │   ├── bukti_pembayaran/
+│   │   └── laporan/
+│   └── index.php
+│
+├── resources/
+│   ├── views/
+│   │
+│   │   ├── layouts/
+│   │   │   ├── appadmin.blade.php
+│   │   │   ├── appkasir.blade.php
+│   │   │   ├── appowner.blade.php
+│   │   │   ├── appwaiter.blade.php
+│   │   │   ├── appdapur.blade.php
+│   │   │   └── appcustomer.blade.php
+│   │
+│   │   ├── auth/
+│   │   │   ├── login.blade.php
+│   │   │   ├── register.blade.php
+│   │   │   └── forgotpassword.blade.php
+│   │
+│   │   ├── admin/
+│   │   │   ├── dashboard/
+│   │   │   ├── user/
+│   │   │   ├── role/
+│   │   │   └── master/
+│   │
+│   │   ├── kasir/
+│   │   │   ├── dashboard/
+│   │   │   ├── order/
+│   │   │   ├── pembayaran/
+│   │   │   ├── refund/
+│   │   │   └── struk/
+│   │
+│   │   ├── waiter/
+│   │   │   ├── dashboard/
+│   │   │   ├── meja/
+│   │   │   └── order/
+│   │
+│   │   ├── dapur/
+│   │   │   ├── antrian/
+│   │   │   └── status/
+│   │
+│   │   ├── owner/
+│   │   │   ├── dashboard/
+│   │   │   └── laporan/
+│   │
+│   │   ├── customer/
+│   │   │   ├── home.blade.php
+│   │   │   ├── menu.blade.php
+│   │   │   ├── order.blade.php
+│   │   │   └── tracking.blade.php
+│   │
+│   │   └── errors/
+│   │       ├── 404.blade.php
+│   │       ├── 403.blade.php
+│   │       └── 500.blade.php
+│
+├── routes/
+│   ├── web.php
+│   ├── api.php
+│   ├── cashier.php
+│   ├── waiter.php
+│   └── kitchen.php
+│
+├── storage/
+├── tests/
+└── .env
