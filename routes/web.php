@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 */
 use App\Http\Controllers\Landing\LandingController;
 use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\Auth\PenyewaAuthController;
 use App\Http\Controllers\Dashboard\DashboardController;
 
 // MASTER
@@ -19,13 +20,15 @@ use App\Http\Controllers\Master\MerkController;
 use App\Http\Controllers\Master\KondisiController;
 use App\Http\Controllers\Master\AlatController;
 
+// PENYEWA
+use App\Http\Controllers\Penyewa\PemesananController as PenyewaPemesananController;
+
 
 /*
 |--------------------------------------------------------------------------
-| DEFAULT LOGIN (WAJIB UNTUK AUTH MIDDLEWARE)
+| DEFAULT LOGIN
 |--------------------------------------------------------------------------
 */
-
 Route::get('/login', function () {
     return redirect()->route('auth.user.login');
 })->name('login');
@@ -46,26 +49,23 @@ Route::prefix('auth/user')->name('auth.user.')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| AUTH PENYEWA (SEMENTARA VIEW)
+| AUTH PENYEWA
 |--------------------------------------------------------------------------
 */
 Route::prefix('auth/penyewa')->name('auth.penyewa.')->group(function () {
 
-    Route::get('/login', function () {
-        return view('auth.loginpenyewa');
-    })->name('login');
+    Route::get('/login', [PenyewaAuthController::class, 'login'])->name('login');
+    Route::post('/login', [PenyewaAuthController::class, 'prosesLogin'])->name('proses');
+    Route::post('/logout', [PenyewaAuthController::class, 'logout'])->name('logout');
 
-    Route::get('/register', function () {
-        return view('auth.registerpenyewa');
-    })->name('register');
-
-    Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout');
+    Route::get('/register', [PenyewaAuthController::class, 'register'])->name('register');
+    Route::post('/register', [PenyewaAuthController::class, 'prosesRegister'])->name('prosesRegister');
 });
 
 
 /*
 |--------------------------------------------------------------------------
-| LANDING (TAMU)
+| LANDING (PUBLIC)
 |--------------------------------------------------------------------------
 */
 Route::controller(LandingController::class)->group(function () {
@@ -85,46 +85,60 @@ Route::controller(LandingController::class)->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| DASHBOARD + MASTER DATA (SETELAH LOGIN)
+| DASHBOARD ADMIN & PETUGAS
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->prefix('dashboard')->group(function () {
 
-    Route::prefix('dashboard')->group(function () {
+    // ================= ADMIN =================
+    Route::middleware('role:admin')->group(function () {
 
-        // 🔐 ADMIN
-        Route::middleware('role:admin')->group(function () {
+        Route::get('/admin', [DashboardController::class, 'admin'])
+            ->name('dashboard.admin');
 
-            Route::get('/admin', [DashboardController::class, 'admin'])
-                ->name('dashboard.admin');
+        Route::resource('/user', UserController::class);
 
-            /*
-            |--------------------------------------------------------------------------
-            | MASTER DATA (ADMIN)
-            |--------------------------------------------------------------------------
-            */
-            Route::resource('/user', UserController::class);
-            Route::resource('/penyewa', PenyewaController::class);
-            Route::resource('/kategori', KategoriController::class);
-            Route::resource('/merk', MerkController::class);
-            Route::resource('/kondisi', KondisiController::class);
-            Route::resource('/alat', AlatController::class);
-        });
+        // 🔥 penting: kasih prefix admin biar tidak bentrok
+        Route::resource('/admin/penyewa', PenyewaController::class)
+            ->names('admin.penyewa');
 
+        Route::resource('/kategori', KategoriController::class);
+        Route::resource('/merk', MerkController::class);
+        Route::resource('/kondisi', KondisiController::class);
+        Route::resource('/alat', AlatController::class);
+    });
 
-        // 🔐 PETUGAS
-        Route::middleware('role:petugas')->group(function () {
+    // ================= PETUGAS =================
+    Route::middleware('role:petugas')->group(function () {
 
-            Route::get('/petugas', [DashboardController::class, 'petugas'])
-                ->name('dashboard.petugas');
+        Route::get('/petugas', [DashboardController::class, 'petugas'])
+            ->name('dashboard.petugas');
 
-            /*
-            |--------------------------------------------------------------------------
-            | MASTER DATA (PETUGAS - OPSIONAL)
-            |--------------------------------------------------------------------------
-            */
-            Route::resource('/penyewa', PenyewaController::class)->only(['index', 'show']);
-            Route::resource('/alat', AlatController::class)->only(['index', 'show']);
-        });
+        Route::resource('/petugas/penyewa', PenyewaController::class)
+            ->only(['index', 'show'])
+            ->names('petugas.penyewa');
+
+        Route::resource('/alat', AlatController::class)
+            ->only(['index', 'show']);
     });
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| AREA PENYEWA (LOGIN SENDIRI)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth:penyewa'])
+    ->prefix('penyewa')
+    ->name('penyewa.')
+    ->group(function () {
+
+        // DASHBOARD
+        Route::get('/dashboard', function () {
+            return view('zonaPenyewa.dashboard.Penyewa');
+        })->name('dashboard');
+
+        // PEMESANAN
+        Route::resource('/pemesanan', PenyewaPemesananController::class);
+    });

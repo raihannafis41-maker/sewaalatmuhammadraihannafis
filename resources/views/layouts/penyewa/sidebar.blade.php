@@ -18,7 +18,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="/penyewa/pemesanan" class="nav-link">
+                    <a href="{{ route('penyewa.pemesanan.index') }}" class="nav-link">
                         <i class="nav-icon fas fa-shopping-cart"></i>
                         <p>Pemesanan Saya</p>
                     </a>
@@ -39,7 +39,7 @@
                 </li>
 
                 <li class="nav-item mt-3">
-                    <form action="/logout-penyewa" method="POST">
+                    <form action="{{ route('auth.penyewa.logout') }}" method="POST">
                         @csrf
                         <button class="nav-link text-danger border-0 bg-transparent w-100 text-left">
                             <i class="nav-icon fas fa-sign-out-alt"></i>

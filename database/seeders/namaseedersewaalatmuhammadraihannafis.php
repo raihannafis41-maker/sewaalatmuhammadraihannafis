@@ -149,7 +149,7 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
 
         DB::table('detailpemesanan')->insert([
             [
-                'pemesanan_id' => $pemesanan->id,
+                'pemesananid' => $pemesanan->id,
                 'alatid' => $alat->id,
                 'dendaid' => $denda->id,
                 'jumlah' => 1,

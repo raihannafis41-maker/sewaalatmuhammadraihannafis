@@ -28,8 +28,8 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="/penyewa" class="nav-link">
-                        <i class="nav-icon fas fa-user"></i>
+                    <a href="{{ url('dashboard/admin/penyewa') }}" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
                         <p>Penyewa</p>
                     </a>
                 </li>

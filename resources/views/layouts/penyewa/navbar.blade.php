@@ -28,7 +28,7 @@
 
                 <div class="dropdown-divider"></div>
 
-                <form action="/logout-penyewa" method="POST">
+                <form action="{{ route('auth.penyewa.logout') }}" method="POST">
                     @csrf
                     <button class="dropdown-item text-danger">
                         <i class="fas fa-sign-out-alt"></i> Logout

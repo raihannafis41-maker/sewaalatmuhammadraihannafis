@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,43 +13,45 @@
 
     @stack('css')
 </head>
+
 <body class="hold-transition sidebar-mini">
 
-<div class="wrapper">
+    <div class="wrapper">
 
-    {{-- Navbar --}}
-    @include('layouts.penyewa.navbar')
+        {{-- Navbar --}}
+        @include('layouts.Penyewa.navbar')
 
-    {{-- Sidebar --}}
-    @include('layouts.penyewa.sidebar')
+        {{-- Sidebar --}}
+        @include('layouts.Penyewa.sidebar')
 
-    {{-- Content --}}
-    <div class="content-wrapper">
+        {{-- Content --}}
+        <div class="content-wrapper">
 
-        <div class="content-header">
-            <div class="container-fluid">
-                <h1 class="m-0">@yield('title')</h1>
+            <div class="content-header">
+                <div class="container-fluid">
+                    <h1 class="m-0">@yield('title')</h1>
+                </div>
             </div>
+
+            <section class="content">
+                <div class="container-fluid">
+                    @yield('content')
+                </div>
+            </section>
+
         </div>
 
-        <section class="content">
-            <div class="container-fluid">
-                @yield('content')
-            </div>
-        </section>
+        {{-- Footer --}}
+        @include('layouts.Penyewa.footer')
 
     </div>
 
-    {{-- Footer --}}
-    @include('layouts.penyewa.footer')
+    <!-- Scripts -->
+    <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
 
-</div>
-
-<!-- Scripts -->
-<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
-
-@stack('js')
+    @stack('js')
 </body>
+
 </html>
