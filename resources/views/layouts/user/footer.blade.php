@@ -5,7 +5,7 @@
     </div>
 
     <strong>
-        &copy; {{ date('Y') }} SewaAlat Rizka
+        &copy; {{ date('Y') }} sewaalatmuhammadraihannafis
     </strong>
 
 </footer>

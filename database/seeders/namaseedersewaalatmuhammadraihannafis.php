@@ -11,10 +11,11 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
 {
     public function run(): void
     {
-        // USER
+        // ======================
+        // USER (TANPA NAMA)
+        // ======================
         DB::table('user')->insert([
             [
-                'nama' => 'Admin',
                 'username' => 'admin',
                 'password' => Hash::make('123'),
                 'role' => 'admin',
@@ -22,7 +23,6 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'nama' => 'Petugas',
                 'username' => 'petugas',
                 'password' => Hash::make('123'),
                 'role' => 'petugas',
@@ -31,7 +31,9 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
             ],
         ]);
 
+        // ======================
         // PENYEWA
+        // ======================
         DB::table('penyewa')->insert([
             [
                 'nama' => 'Rizka',
@@ -44,7 +46,9 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
             ]
         ]);
 
+        // ======================
         // MASTER
+        // ======================
         DB::table('merk')->insert([
             ['namamerk' => 'Canon', 'created_at' => now(), 'updated_at' => now()],
         ]);
@@ -61,7 +65,9 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
         $kondisi = DB::table('kondisi')->first();
         $kategori = DB::table('kategori')->first();
 
+        // ======================
         // ALAT
+        // ======================
         DB::table('alat')->insert([
             [
                 'namaalat' => 'Kamera DSLR',
@@ -75,7 +81,9 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
             ]
         ]);
 
+        // ======================
         // DENDA
+        // ======================
         DB::table('denda')->insert([
             [
                 'jenisdenda' => 'Terlambat',
@@ -85,7 +93,9 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
             ]
         ]);
 
+        // ======================
         // ARTIKEL
+        // ======================
         $user = DB::table('user')->first();
 
         DB::table('artikel')->insert([
@@ -99,7 +109,9 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
             ]
         ]);
 
+        // ======================
         // KOMENTAR
+        // ======================
         $artikel = DB::table('artikel')->first();
         $penyewa = DB::table('penyewa')->first();
 
@@ -113,7 +125,9 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
             ]
         ]);
 
+        // ======================
         // PEMESANAN
+        // ======================
         DB::table('pemesanan')->insert([
             [
                 'userid' => $user->id,
@@ -126,7 +140,9 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
             ]
         ]);
 
+        // ======================
         // DETAIL PEMESANAN
+        // ======================
         $pemesanan = DB::table('pemesanan')->first();
         $alat = DB::table('alat')->first();
         $denda = DB::table('denda')->first();

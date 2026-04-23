@@ -6,14 +6,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class User extends Authenticatable
+class ModelUser extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // 🔥 WAJIB: karena tabel kamu bukan 'users'
+    // 🔥 Nama tabel kamu
     protected $table = 'user';
 
-    // 🔥 FIELD SESUAI MIGRATION
+    // 🔥 Primary key (kalau bukan id, ubah di sini)
+    protected $primaryKey = 'id';
+
+    // 🔥 Field yang boleh diisi
     protected $fillable = [
         'nama',
         'username',
@@ -21,12 +24,18 @@ class User extends Authenticatable
         'role'
     ];
 
-    // 🔥 HIDDEN
+    // 🔥 Hidden
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
-    // 🔥 OPTIONAL (biar Laravel tau login pakai username)
+    // 🔥 PENTING: AUTO HASH PASSWORD (WAJIB DI LARAVEL 10+)
+    protected $casts = [
+        'password' => 'hashed',
+    ];
+
+    // 🔥 LOGIN PAKAI USERNAME (BUKAN EMAIL)
     public function getAuthIdentifierName()
     {
         return 'username';

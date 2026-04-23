@@ -11,7 +11,7 @@
 
         <div class="card-body">
 
-            <form action="{{ route('loginuser.post') }}" method="POST">
+            <form action="{{ route('auth.user.proses') }}" method="POST">
                 @csrf
 
                 <div class="form-group">
@@ -32,7 +32,7 @@
         </div>
 
         <div class="card-footer text-center">
-            <a href="{{ route('loginpenyewa') }}">
+            <a href="{{ route('auth.penyewa.login') }}">
                 Login sebagai Penyewa
             </a>
         </div>

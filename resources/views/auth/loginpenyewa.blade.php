@@ -17,8 +17,8 @@
                     @csrf
 
                     <div class="form-group mb-3">
-                        <label>username</label>
-                        <input type="username" name="username" class="form-control" required>
+                        <label>Username</label>
+                        <input type="text" name="username" class="form-control" required>
                     </div>
 
                     <div class="form-group mb-3">
@@ -31,7 +31,7 @@
                     </button>
 
                     <div class="text-center mt-3">
-                        <a href="{{ route('registerpenyewa') }}">
+                        <a href="{{ route('auth.penyewa.register') }}">
                             Belum punya akun? Daftar
                         </a>
                     </div>

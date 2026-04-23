@@ -44,17 +44,17 @@ sewaalatmuhammadraihannafis/
 │   │       └── PenyewaMiddleware.php
 │   │
 │   ├── Models/
-│   │   ├── User.php
-│   │   ├── Penyewa.php
-│   │   ├── Kategori.php
-│   │   ├── Merk.php
-│   │   ├── Kondisi.php
-│   │   ├── Alat.php
-│   │   ├── Pemesanan.php
-│   │   ├── Pembayaran.php
-│   │   ├── Denda.php
-│   │   ├── Artikel.php
-│   │   └── Komentar.php
+│   │   ├── ModelUser.php
+│   │   ├── ModelPenyewa.php
+│   │   ├── ModelKategori.php
+│   │   ├── ModelMerk.php
+│   │   ├── ModelKondisi.php
+│   │   ├── ModelAlat.php
+│   │   ├── ModelPemesanan.php
+│   │   ├── ModelPembayaran.php
+│   │   ├── ModelDenda.php
+│   │   ├── ModelArtikel.php
+│   │   └── ModelKomentar.php
 │   │
 │   └── Services/   ← (opsional tapi sangat disarankan)
 │       ├── PemesananService.php

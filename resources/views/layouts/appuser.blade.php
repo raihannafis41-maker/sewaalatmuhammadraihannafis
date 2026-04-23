@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,49 +13,61 @@
 
     @stack('css')
 </head>
+
 <body class="hold-transition sidebar-mini">
 
-<div class="wrapper">
+    <div class="wrapper">
 
-    {{-- Navbar --}}
-    @include('layouts.user.navbar')
+        {{-- ✅ NAVBAR --}}
+        @auth
+        @include('layouts.user.navbar')
+        @endauth
 
-    {{-- Sidebar --}}
-    @if(auth()->user()->role == 'admin')
+        {{-- ✅ SIDEBAR (AMAN DARI ERROR) --}}
+        @auth
+        @if(auth()->user()->role == 'admin')
         @include('layouts.user.sidebaradmin')
-    @else
+        @elseif(auth()->user()->role == 'petugas')
         @include('layouts.user.sidebarpetugas')
-    @endif
+        @endif
+        @endauth
 
-    {{-- Content --}}
-    <div class="content-wrapper">
+        {{-- CONTENT --}}
+        <div class="content-wrapper">
 
-        {{-- Header --}}
-        <div class="content-header">
-            <div class="container-fluid">
-                <h1 class="m-0">@yield('title')</h1>
+            {{-- HEADER --}}
+            <div class="content-header">
+                <div class="container-fluid">
+                    <h1 class="m-0">@yield('title')</h1>
+                </div>
             </div>
+
+            {{-- MAIN CONTENT --}}
+            <section class="content">
+                <div class="container-fluid">
+                    @yield('content')
+                </div>
+            </section>
+
         </div>
 
-        {{-- Main Content --}}
-        <section class="content">
-            <div class="container-fluid">
-                @yield('content')
-            </div>
-        </section>
+        {{-- FOOTER --}}
+        @include('layouts.user.footer')
 
     </div>
 
-    {{-- Footer --}}
-    @include('layouts.user.footer')
+    <!-- Scripts -->
+    <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-</div>
+    <!-- Bootstrap 4 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Scripts -->
-<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
-<script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('dist/js/adminlte.min.js') }}"></script>
+    <!-- AdminLTE -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
 
-@stack('js')
+    @stack('js')
 </body>
+
 </html>

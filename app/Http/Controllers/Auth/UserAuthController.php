@@ -5,46 +5,53 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use App\Models\ModelUser;
 
 class UserAuthController extends Controller
 {
     // ======================
-    // TAMPILKAN LOGIN
+    // HALAMAN LOGIN
     // ======================
-    public function showLogin()
+    public function login()
     {
+        if (Auth::check()) {
+            return $this->redirectByRole(Auth::user());
+        }
+
         return view('auth.loginuser');
     }
 
     // ======================
     // PROSES LOGIN
     // ======================
-    public function login(Request $request)
+    public function prosesLogin(Request $request)
     {
-        $credentials = $request->validate([
+        $request->validate([
             'username' => 'required',
             'password' => 'required'
         ]);
 
-        if (Auth::guard('web')->attempt($credentials)) {
+        // 🔥 Ambil user berdasarkan username
+        $user = ModelUser::where('username', $request->username)->first();
 
-            $request->session()->regenerate();
-
-            $user = Auth::user();
-
-            // ======================
-            // REDIRECT BERDASARKAN ROLE
-            // ======================
-            if ($user->role == 'admin') {
-                return redirect()->route('dashboardadmin');
-            } elseif ($user->role == 'petugas') {
-                return redirect()->route('dashboardpetugas');
-            }
-
-            return redirect('/');
+        // ❌ Jika user tidak ada
+        if (!$user) {
+            return back()->withInput()->with('error', 'Username tidak ditemukan');
         }
 
-        return back()->with('error', 'Username atau Password salah');
+        // ❌ Jika password salah
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withInput()->with('error', 'Password salah');
+        }
+
+        // ✅ Login
+        Auth::login($user);
+
+        // 🔐 regenerate session
+        $request->session()->regenerate();
+
+        return $this->redirectByRole($user);
     }
 
     // ======================
@@ -57,6 +64,22 @@ class UserAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('loginuser');
+        return redirect()->route('auth.user.login');
+    }
+
+    // ======================
+    // REDIRECT ROLE
+    // ======================
+    private function redirectByRole($user)
+    {
+        if ($user->role === 'admin') {
+            return redirect()->route('dashboard.admin');
+        }
+
+        if ($user->role === 'petugas') {
+            return redirect()->route('dashboard.petugas');
+        }
+
+        return redirect()->route('home');
     }
 }

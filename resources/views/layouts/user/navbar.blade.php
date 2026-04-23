@@ -12,11 +12,11 @@
     {{-- Right navbar --}}
     <ul class="navbar-nav ml-auto">
 
-        {{-- User Info --}}
+        @auth
         <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="far fa-user"></i>
-                <span class="ml-1">{{ auth()->user()->nama ?? 'User' }}</span>
+                <span class="ml-1">{{ auth()->user()->nama }}</span>
             </a>
 
             <div class="dropdown-menu dropdown-menu-right">
@@ -26,11 +26,15 @@
 
                 <div class="dropdown-divider"></div>
 
-                <a href="/logout" class="dropdown-item text-danger">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
+                <form action="{{ route('auth.user.logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="dropdown-item text-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </form>
             </div>
         </li>
+        @endauth
 
     </ul>
 

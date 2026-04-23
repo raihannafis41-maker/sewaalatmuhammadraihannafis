@@ -33,11 +33,11 @@
                 </li>
 
                 {{-- Auth --}}
-                <a href="{{ route('loginuser') }}" class="btn btn-primary btn-sm me-2">
+                <a href="{{ route('auth.user.login') }}" class="btn btn-primary btn-sm me-2">
                     Login User
                 </a>
 
-                <a href="{{ route('loginpenyewa') }}" class="btn btn-success btn-sm">
+                <a href="{{ route('auth.penyewa.login') }}" class="btn btn-success btn-sm">
                     Login Penyewa
                 </a>
 
