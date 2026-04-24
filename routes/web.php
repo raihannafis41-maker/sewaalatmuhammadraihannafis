@@ -23,6 +23,10 @@ use App\Http\Controllers\Master\AlatController;
 // PENYEWA
 use App\Http\Controllers\Penyewa\PemesananController as PenyewaPemesananController;
 
+// TRANSAKSI
+use App\Http\Controllers\Transaksi\ArtikelController;
+use App\Http\Controllers\Transaksi\KomentarController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -71,8 +75,12 @@ Route::prefix('auth/penyewa')->name('auth.penyewa.')->group(function () {
 Route::controller(LandingController::class)->group(function () {
 
     Route::get('/', 'home')->name('home');
-
     Route::get('/detailartikel/{id}', 'detailArtikel')->name('detailartikel');
+
+    // ✅ KOMENTAR UTAMA (penyewa)
+    Route::post('/detailartikel/{id}/komentar', 'storeKomentar')
+        ->middleware('auth:penyewa')
+        ->name('komentar.store');
 
     Route::get('/kategori/{id?}', 'kategori')->name('kategori');
     Route::get('/daftarkategori', 'daftarKategori')->name('daftarkategori');
@@ -85,48 +93,65 @@ Route::controller(LandingController::class)->group(function () {
 
 /*
 |--------------------------------------------------------------------------
+| KOMENTAR REPLY (GLOBAL - ADMIN & PENYEWA)
+|--------------------------------------------------------------------------
+*/
+Route::post('/komentar/reply', [KomentarController::class, 'store'])
+    ->name('komentar.reply');
+
+
+/*
+|--------------------------------------------------------------------------
 | DASHBOARD ADMIN & PETUGAS
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->prefix('dashboard')->group(function () {
+Route::prefix('dashboard')->middleware(['auth'])->group(function () {
 
-    // ================= ADMIN =================
-    Route::middleware('role:admin')->group(function () {
+    /*
+    |================= ADMIN =================
+    */
+    Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
 
-        Route::get('/admin', [DashboardController::class, 'admin'])
-            ->name('dashboard.admin');
+        Route::get('/', [DashboardController::class, 'admin'])->name('dashboard');
 
-        Route::resource('/user', UserController::class);
+        Route::resource('user', UserController::class);
+        Route::resource('penyewa', PenyewaController::class);
+        Route::resource('kategori', KategoriController::class);
+        Route::resource('merk', MerkController::class);
+        Route::resource('kondisi', KondisiController::class);
+        Route::resource('alat', AlatController::class);
 
-        // 🔥 penting: kasih prefix admin biar tidak bentrok
-        Route::resource('/admin/penyewa', PenyewaController::class)
-            ->names('admin.penyewa');
-
-        Route::resource('/kategori', KategoriController::class);
-        Route::resource('/merk', MerkController::class);
-        Route::resource('/kondisi', KondisiController::class);
-        Route::resource('/alat', AlatController::class);
+        Route::resource('artikel', ArtikelController::class);
+        Route::resource('komentar', KomentarController::class);
     });
 
-    // ================= PETUGAS =================
-    Route::middleware('role:petugas')->group(function () {
 
-        Route::get('/petugas', [DashboardController::class, 'petugas'])
-            ->name('dashboard.petugas');
+    /*
+    |================= PETUGAS =================
+    */
+    Route::prefix('petugas')->name('petugas.')->middleware('role:petugas')->group(function () {
 
-        Route::resource('/petugas/penyewa', PenyewaController::class)
-            ->only(['index', 'show'])
-            ->names('petugas.penyewa');
+        Route::get('/', [DashboardController::class, 'petugas'])->name('dashboard');
 
-        Route::resource('/alat', AlatController::class)
+        Route::resource('penyewa', PenyewaController::class)
+            ->only(['index', 'show']);
+
+        Route::resource('alat', AlatController::class)
+            ->only(['index', 'show']);
+
+        Route::resource('artikel', ArtikelController::class)
+            ->only(['index', 'show']);
+
+        Route::resource('komentar', KomentarController::class)
             ->only(['index', 'show']);
     });
+
 });
 
 
 /*
 |--------------------------------------------------------------------------
-| AREA PENYEWA (LOGIN SENDIRI)
+| AREA PENYEWA
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth:penyewa'])
@@ -134,11 +159,9 @@ Route::middleware(['auth:penyewa'])
     ->name('penyewa.')
     ->group(function () {
 
-        // DASHBOARD
         Route::get('/dashboard', function () {
             return view('zonaPenyewa.dashboard.Penyewa');
         })->name('dashboard');
 
-        // PEMESANAN
         Route::resource('/pemesanan', PenyewaPemesananController::class);
     });

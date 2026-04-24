@@ -4,36 +4,51 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\ModelUser;
+use App\Models\ModelPenyewa;
+use App\Models\ModelAlat;
+use App\Models\ModelPemesanan;
 
 class DashboardController extends Controller
 {
     public function admin()
     {
-        return view('user.dashboard.dashboardadmin', [
-            'totalUser' => ModelUser::count(),
+        $totalUser = ModelUser::count();
+        $totalPenyewa = ModelPenyewa::count();
+        $totalAlat = ModelAlat::count();
+        $totalPemesanan = ModelPemesanan::count();
 
-            // 🔥 sementara dummy (karena model belum ada)
-            'totalPenyewa' => 0,
-            'totalAlat' => 0,
-            'totalPemesanan' => 0,
+        // ambil 10 penyewa terbaru
+        $penyewaTerbaru = ModelPenyewa::orderBy('created_at', 'desc')->take(10)->get();
 
-            // 🔥 kosongkan dulu
-            'pemesananTerbaru' => []
-        ]);
+        // ambil 5 pemesanan terbaru
+        $pemesananTerbaru = ModelPemesanan::orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('user.dashboard.dashboardadmin', compact(
+            'totalUser',
+            'totalPenyewa',
+            'totalAlat',
+            'totalPemesanan',
+            'penyewaTerbaru',
+            'pemesananTerbaru'
+        ));
     }
 
     public function petugas()
     {
-        return view('user.dashboard.dashboardpetugas', [
-            'totalUser' => ModelUser::count(),
+        $totalUser = ModelUser::count();
+        $totalPenyewa = ModelPenyewa::count();
+        $totalAlat = ModelAlat::count();
+        $totalPemesanan = ModelPemesanan::count();
 
-            // 🔥 sementara dummy
-            'totalPenyewa' => 0,
-            'totalAlat' => 0,
-            'totalPemesanan' => 0,
+        // ambil 5 pemesanan terbaru
+        $pemesananTerbaru = ModelPemesanan::orderBy('created_at', 'desc')->take(5)->get();
 
-            // 🔥 kosongkan dulu
-            'pemesananTerbaru' => []
-        ]);
+        return view('user.dashboard.dashboardpetugas', compact(
+            'totalUser',
+            'totalPenyewa',
+            'totalAlat',
+            'totalPemesanan',
+            'pemesananTerbaru'
+        ));
     }
 }

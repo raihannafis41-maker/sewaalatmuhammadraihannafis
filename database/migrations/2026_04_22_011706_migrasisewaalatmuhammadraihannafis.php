@@ -13,7 +13,7 @@ return new class extends Migration
         // ======================
         Schema::create('user', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique(); // ❌ nama dihapus
+            $table->string('username')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'petugas']);
             $table->timestamps();
@@ -116,14 +116,28 @@ return new class extends Migration
         });
 
         // ======================
-        // KOMENTAR
+        // KOMENTAR (FINAL SUPPORT REPLY)
         // ======================
         Schema::create('komentar', function (Blueprint $table) {
             $table->id();
+
+            // relasi ke artikel
             $table->foreignId('artikelid')->constrained('artikel')->cascadeOnDelete();
-            $table->foreignId('penyewaid')->constrained('penyewa')->cascadeOnDelete();
+
+            // siapa yang komentar
+            $table->foreignId('penyewaid')->nullable()->constrained('penyewa')->cascadeOnDelete();
+            $table->foreignId('userid')->nullable()->constrained('user')->cascadeOnDelete();
+
+            // isi komentar
             $table->text('isikomentar');
+
+            // reply (thread komentar)
+            $table->unsignedBigInteger('parent_id')->nullable();
+
             $table->timestamps();
+
+            // relasi ke dirinya sendiri
+            $table->foreign('parent_id')->references('id')->on('komentar')->cascadeOnDelete();
         });
     }
 

@@ -46,7 +46,7 @@ class UserAuthController extends Controller
         }
 
         // ✅ Login
-        Auth::login($user);
+        Auth::guard('web')->login($user);
 
         // 🔐 regenerate session
         $request->session()->regenerate();

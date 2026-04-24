@@ -10,14 +10,26 @@
             <ul class="nav nav-pills nav-sidebar flex-column">
 
                 <li class="nav-item">
-                    <a href="/petugas/dashboard" class="nav-link">
+                    <a href="{{ url('/dashboard/petugas') }}" class="nav-link">
                         <i class="nav-icon fas fa-home"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
                 <li class="nav-header">TRANSAKSI</li>
+                <li class="nav-item">
+                    <a href="{{ url('/dashboard/artikel') }}" class="nav-link">
+                        <i class="nav-icon fas fa-newspaper"></i>
+                        <p>Artikel</p>
+                    </a>
+                </li>
 
+                <li class="nav-item">
+                    <a href="{{ url('/dashboard/komentar') }}" class="nav-link">
+                        <i class="nav-icon fas fa-comments"></i>
+                        <p>Komentar</p>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a href="/pemesanan" class="nav-link">
                         <i class="nav-icon fas fa-shopping-cart"></i>

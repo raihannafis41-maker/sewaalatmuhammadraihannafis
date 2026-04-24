@@ -55,6 +55,17 @@
         @include('layouts.user.footer')
 
     </div>
+    <script>
+        function toggleReply(id) {
+            let el = document.getElementById('reply-' + id);
+
+            if (el.style.display === 'none') {
+                el.style.display = 'block';
+            } else {
+                el.style.display = 'none';
+            }
+        }
+    </script>
 
     <!-- Scripts -->
     <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>

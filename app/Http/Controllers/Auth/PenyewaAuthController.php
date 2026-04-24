@@ -28,7 +28,6 @@ class PenyewaAuthController extends Controller
             return back()->with('error', 'Username atau password salah');
         }
 
-        // 🔥 INI KUNCI UTAMA
         Auth::guard('penyewa')->login($penyewa);
 
         return redirect()->route('penyewa.dashboard');

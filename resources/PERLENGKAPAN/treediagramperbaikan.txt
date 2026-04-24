@@ -62,7 +62,7 @@ sewaalatmuhammadraihannafis/
 │
 ├── database/
 │   ├── migrations/
-│   │   └── migrasisewaalatahmadil.php
+│   │   └── migrasisewaalatmuhammadraihannafis.php
 │   │
 │   └── seeders/
 │       └── seedersewaalatahmadil.php => (seeder semua tabel kecuali pemesanan, pembayaran)

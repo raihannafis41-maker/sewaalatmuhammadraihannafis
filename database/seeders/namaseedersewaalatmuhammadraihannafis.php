@@ -12,7 +12,7 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
     public function run(): void
     {
         // ======================
-        // USER (TANPA NAMA)
+        // USER
         // ======================
         DB::table('user')->insert([
             [
@@ -96,30 +96,45 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
         // ======================
         // ARTIKEL
         // ======================
-        $user = DB::table('user')->first();
+        $admin = DB::table('user')->where('role', 'admin')->first();
 
         DB::table('artikel')->insert([
             [
                 'judul' => 'Tips Sewa Kamera',
                 'isi' => 'Gunakan kamera sesuai kebutuhan...',
                 'gambar' => null,
-                'userid' => $user->id,
+                'userid' => $admin->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
         ]);
 
         // ======================
-        // KOMENTAR
+        // KOMENTAR + REPLY
         // ======================
         $artikel = DB::table('artikel')->first();
         $penyewa = DB::table('penyewa')->first();
+        $petugas = DB::table('user')->where('role', 'petugas')->first();
 
+        // komentar utama (penyewa)
+        $komentarId = DB::table('komentar')->insertGetId([
+            'artikelid' => $artikel->id,
+            'penyewaid' => $penyewa->id,
+            'userid' => null,
+            'isikomentar' => 'Artikel sangat membantu!',
+            'parent_id' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        // balasan admin/petugas
         DB::table('komentar')->insert([
             [
                 'artikelid' => $artikel->id,
-                'penyewaid' => $penyewa->id,
-                'isikomentar' => 'Artikel sangat membantu!',
+                'penyewaid' => null,
+                'userid' => $petugas->id,
+                'isikomentar' => 'Terima kasih atas komentarnya 🙏',
+                'parent_id' => $komentarId,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
@@ -130,7 +145,7 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
         // ======================
         DB::table('pemesanan')->insert([
             [
-                'userid' => $user->id,
+                'userid' => $admin->id,
                 'penyewaid' => $penyewa->id,
                 'tanggalpesan' => Carbon::now(),
                 'tanggalkembali' => Carbon::now()->addDays(3),
@@ -141,7 +156,7 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
         ]);
 
         // ======================
-        // DETAIL PEMESANAN
+        // DETAIL PEMESANAN (FIX KOLOM)
         // ======================
         $pemesanan = DB::table('pemesanan')->first();
         $alat = DB::table('alat')->first();
@@ -149,7 +164,7 @@ class namaseedersewaalatmuhammadraihannafis extends Seeder
 
         DB::table('detailpemesanan')->insert([
             [
-                'pemesananid' => $pemesanan->id,
+                'pemesanan_id' => $pemesanan->id, // ✅ FIX
                 'alatid' => $alat->id,
                 'dendaid' => $denda->id,
                 'jumlah' => 1,

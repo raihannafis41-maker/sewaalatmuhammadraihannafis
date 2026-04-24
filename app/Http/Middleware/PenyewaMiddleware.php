@@ -10,7 +10,7 @@ class PenyewaMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Session::has('penyewa_id')) {
+        if (!Session::has('penyewaid')) {
             return redirect()->route('auth.penyewa.login');
         }
 

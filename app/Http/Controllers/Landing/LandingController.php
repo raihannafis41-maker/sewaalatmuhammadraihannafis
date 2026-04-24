@@ -4,53 +4,108 @@ namespace App\Http\Controllers\Landing;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+// MODEL
+use App\Models\ModelArtikel;
+use App\Models\ModelKategori;
+use App\Models\ModelKomentar;
 
 class LandingController extends Controller
 {
-    // HOME
-    public function home()
+    public function home(Request $request)
     {
-        return view('landing.home');
+        $query = ModelArtikel::query();
+
+        if ($request->filled('search')) {
+            $query->where('judul', 'like', '%' . $request->search . '%');
+        }
+
+        $artikel = $query->orderBy('created_at', 'desc')->paginate(6);
+
+        $kategori = ModelKategori::orderBy('namakategori', 'asc')->get();
+        $artikelTerbaru = ModelArtikel::orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('landing.home', compact('artikel', 'kategori', 'artikelTerbaru'));
     }
 
-   public function detailArtikel($id)
-{
-    return view('landing.detailartikel', compact('id'));
-}
+    public function detailArtikel($id)
+    {
+        $artikel = ModelArtikel::findOrFail($id);
 
-    // DAFTAR KATEGORI
+        $kategori = ModelKategori::orderBy('namakategori', 'asc')->get();
+        $artikelTerbaru = ModelArtikel::orderBy('created_at', 'desc')->take(5)->get();
+
+        $komentar = ModelKomentar::join('penyewa', 'komentar.penyewaid', '=', 'penyewa.id')
+            ->select('komentar.*', 'penyewa.nama')
+            ->where('komentar.artikelid', $id)
+            ->orderBy('komentar.created_at', 'desc')
+            ->get();
+
+        return view('landing.detailartikel', compact('artikel', 'komentar', 'kategori', 'artikelTerbaru'));
+    }
+
+    public function storeKomentar(Request $request, $id)
+    {
+        $request->validate([
+            'isikomentar' => 'required|min:3'
+        ]);
+
+        ModelKomentar::create([
+            'artikelid' => $id,
+            'penyewaid' => Auth::guard('penyewa')->id(),
+            'isikomentar' => $request->isikomentar
+        ]);
+
+        return redirect()->route('detailartikel', $id)
+            ->with('success', 'Komentar berhasil dikirim!');
+    }
+
     public function daftarKategori()
     {
-        return view('landing.daftarkategori');
+        $kategori = ModelKategori::orderBy('namakategori', 'asc')->get();
+        $artikelTerbaru = ModelArtikel::orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('landing.daftarkategori', compact('kategori', 'artikelTerbaru'));
     }
 
-    // KATEGORI
     public function kategori($id = null)
     {
-        return view('landing.kategori');
+        $kategori = ModelKategori::orderBy('namakategori', 'asc')->get();
+        $artikelTerbaru = ModelArtikel::orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('landing.kategori', compact('kategori', 'artikelTerbaru'));
     }
 
-    // TAG
     public function tag($nama = null)
     {
-        return view('landing.tag');
+        $kategori = ModelKategori::orderBy('namakategori', 'asc')->get();
+        $artikelTerbaru = ModelArtikel::orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('landing.tag', compact('kategori', 'artikelTerbaru'));
     }
 
-    // TENTANG
     public function tentang()
     {
-        return view('landing.tentang');
+        $kategori = ModelKategori::orderBy('namakategori', 'asc')->get();
+        $artikelTerbaru = ModelArtikel::orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('landing.tentang', compact('kategori', 'artikelTerbaru'));
     }
 
-    // KONTAK
     public function kontak()
     {
-        return view('landing.kontak');
+        $kategori = ModelKategori::orderBy('namakategori', 'asc')->get();
+        $artikelTerbaru = ModelArtikel::orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('landing.kontak', compact('kategori', 'artikelTerbaru'));
     }
 
-    // DAFTAR ISI
     public function daftarIsi()
     {
-        return view('landing.daftarisi');
+        $kategori = ModelKategori::orderBy('namakategori', 'asc')->get();
+        $artikelTerbaru = ModelArtikel::orderBy('created_at', 'desc')->take(5)->get();
+
+        return view('landing.daftarisi', compact('kategori', 'artikelTerbaru'));
     }
 }

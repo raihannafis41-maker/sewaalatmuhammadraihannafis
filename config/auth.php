@@ -5,31 +5,30 @@ use App\Models\ModelPenyewa;
 
 return [
 
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Defaults
+    |--------------------------------------------------------------------------
+    */
     'defaults' => [
         'guard' => 'web',
-        'passwords' => 'user',
+        'password' => 'user', // ✅ sesuai permintaan kamu
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | GUARDS
+    | Authentication Guards
     |--------------------------------------------------------------------------
     */
     'guards' => [
 
-        // 🔹 default (dipakai Laravel)
+        // 🔥 ADMIN & PETUGAS
         'web' => [
             'driver' => 'session',
             'provider' => 'user',
         ],
 
-        // 🔹 ADMIN & PETUGAS
-        'user' => [
-            'driver' => 'session',
-            'provider' => 'user',
-        ],
-
-        // 🔹 PENYEWA
+        // 🔥 PENYEWA
         'penyewa' => [
             'driver' => 'session',
             'provider' => 'penyewa',
@@ -38,18 +37,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | PROVIDERS
+    | User Providers
     |--------------------------------------------------------------------------
     */
     'providers' => [
 
-        // 🔹 USER
+        // 🔥 ADMIN & PETUGAS
         'user' => [
             'driver' => 'eloquent',
             'model' => ModelUser::class,
         ],
 
-        // 🔹 PENYEWA
+        // 🔥 PENYEWA
         'penyewa' => [
             'driver' => 'eloquent',
             'model' => ModelPenyewa::class,
@@ -58,11 +57,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | PASSWORD RESET
+    | Resetting Password
     |--------------------------------------------------------------------------
     */
-    'passwords' => [
+    'password' => [
 
+        // 🔥 ADMIN & PETUGAS
         'user' => [
             'provider' => 'user',
             'table' => 'password_reset_tokens',
@@ -70,6 +70,7 @@ return [
             'throttle' => 60,
         ],
 
+        // 🔥 PENYEWA
         'penyewa' => [
             'provider' => 'penyewa',
             'table' => 'password_reset_tokens',
@@ -78,5 +79,11 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Password Confirmation Timeout
+    |--------------------------------------------------------------------------
+    */
     'password_timeout' => 10800,
+
 ];
