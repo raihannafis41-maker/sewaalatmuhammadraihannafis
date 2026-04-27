@@ -32,25 +32,30 @@ class UserAuthController extends Controller
             'password' => 'required'
         ]);
 
-        // 🔥 Ambil user berdasarkan username
+        // Ambil user berdasarkan username
         $user = ModelUser::where('username', $request->username)->first();
 
-        // ❌ Jika user tidak ada
+        // Jika user tidak ditemukan
         if (!$user) {
-            return back()->withInput()->with('error', 'Username tidak ditemukan');
+            return back()
+                ->withInput()
+                ->with('error', 'Username tidak ditemukan');
         }
 
-        // ❌ Jika password salah
+        // Jika password salah
         if (!Hash::check($request->password, $user->password)) {
-            return back()->withInput()->with('error', 'Password salah');
+            return back()
+                ->withInput()
+                ->with('error', 'Password salah');
         }
 
-        // ✅ Login
+        // Login
         Auth::guard('web')->login($user);
 
-        // 🔐 regenerate session
+        // Regenerate session (security)
         $request->session()->regenerate();
 
+        // Redirect sesuai role
         return $this->redirectByRole($user);
     }
 
@@ -59,7 +64,7 @@ class UserAuthController extends Controller
     // ======================
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -68,18 +73,21 @@ class UserAuthController extends Controller
     }
 
     // ======================
-    // REDIRECT ROLE
+    // REDIRECT BERDASARKAN ROLE
     // ======================
     private function redirectByRole($user)
     {
+        // ADMIN
         if ($user->role === 'admin') {
-            return redirect()->route('dashboard.admin');
+            return redirect()->route('admin.dashboard');
         }
 
+        // PETUGAS
         if ($user->role === 'petugas') {
-            return redirect()->route('dashboard.petugas');
+            return redirect()->route('petugas.dashboard');
         }
 
+        // DEFAULT
         return redirect()->route('home');
     }
 }

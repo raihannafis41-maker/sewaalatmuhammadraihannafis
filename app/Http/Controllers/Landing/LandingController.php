@@ -36,31 +36,64 @@ class LandingController extends Controller
         $kategori = ModelKategori::orderBy('namakategori', 'asc')->get();
         $artikelTerbaru = ModelArtikel::orderBy('created_at', 'desc')->take(5)->get();
 
-        $komentar = ModelKomentar::join('penyewa', 'komentar.penyewaid', '=', 'penyewa.id')
-            ->select('komentar.*', 'penyewa.nama')
-            ->where('komentar.artikelid', $id)
-            ->orderBy('komentar.created_at', 'desc')
+        $komentar = ModelKomentar::with([
+            'penyewa',
+            'user',
+            'replies'
+        ])
+            ->where('artikelid', $id)
+            ->whereNull('parent_id')
+            ->latest()
             ->get();
 
-        return view('landing.detailartikel', compact('artikel', 'komentar', 'kategori', 'artikelTerbaru'));
+        return view('landing.detailartikel', compact(
+            'artikel',
+            'komentar',
+            'kategori',
+            'artikelTerbaru'
+        ));
     }
-
     public function storeKomentar(Request $request, $id)
     {
+        if (!auth()->check() && !auth('penyewa')->check()) {
+            abort(403, 'Login dulu untuk komentar');
+        }
+
         $request->validate([
             'isikomentar' => 'required|min:3'
         ]);
 
+        // 🔥 PAKSA INTEGER ID
+        $userId = null;
+        $penyewaId = null;
+
+        if (auth('penyewa')->check()) {
+            $penyewaId = (int) auth('penyewa')->id();
+        }
+
+        if (auth()->check()) {
+            $user = auth()->user();
+
+            // 🔥 PAKSA AMBIL ID NUMERIK
+            $userId = $user->id ?? null;
+
+            // kalau ternyata string (BUG SISTEM)
+            if (!is_numeric($userId)) {
+                abort(500, 'User ID harus angka, cek model user kamu');
+            }
+        }
+
         ModelKomentar::create([
-            'artikelid' => $id,
-            'penyewaid' => Auth::guard('penyewa')->id(),
+            'artikelid'   => $id,
+            'penyewaid'   => $penyewaId,
+            'userid'      => $userId,
+            'parent_id'   => $request->parent_id,
             'isikomentar' => $request->isikomentar
         ]);
 
         return redirect()->route('detailartikel', $id)
             ->with('success', 'Komentar berhasil dikirim!');
     }
-
     public function daftarKategori()
     {
         $kategori = ModelKategori::orderBy('namakategori', 'asc')->get();

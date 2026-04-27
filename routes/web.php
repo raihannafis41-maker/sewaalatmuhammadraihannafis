@@ -33,6 +33,7 @@ use App\Http\Controllers\Transaksi\KomentarController;
 | DEFAULT LOGIN
 |--------------------------------------------------------------------------
 */
+
 Route::get('/login', function () {
     return redirect()->route('auth.user.login');
 })->name('login');
@@ -79,7 +80,7 @@ Route::controller(LandingController::class)->group(function () {
 
     // ✅ KOMENTAR UTAMA (penyewa)
     Route::post('/detailartikel/{id}/komentar', 'storeKomentar')
-        ->middleware('auth:penyewa')
+        ->middleware('auth') // ✅ semua user login
         ->name('komentar.store');
 
     Route::get('/kategori/{id?}', 'kategori')->name('kategori');
@@ -145,7 +146,6 @@ Route::prefix('dashboard')->middleware(['auth'])->group(function () {
         Route::resource('komentar', KomentarController::class)
             ->only(['index', 'show']);
     });
-
 });
 
 

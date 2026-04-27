@@ -51,7 +51,7 @@
 
             <div class="card-body">
 
-                @auth('penyewa')
+                @auth
                     <form action="{{ route('komentar.store', ['id' => $artikel->id]) }}" method="POST">
                         @csrf
 
@@ -67,7 +67,7 @@
                     </form>
                 @else
                     <div class="alert alert-warning">
-                        Silakan <a href="{{ route('auth.penyewa.login') }}">login sebagai penyewa</a>
+                        Silakan <a href="{{ route('auth.user.login') }}">login</a>
                         untuk mengomentari artikel.
                     </div>
                 @endauth
@@ -85,9 +85,13 @@
             <div class="card-body">
 
                 @forelse($komentar as $k)
-                    {{-- KOMENTAR UTAMA --}}
                     <div class="border rounded p-3 mb-3">
-                        <strong>{{ $k->nama }}</strong>
+
+                        {{-- NAMA --}}
+                        <strong>
+                            {{ $k->penyewa->nama ?? $k->user->username ?? 'User' }}
+                        </strong>
+
                         <br>
                         <small class="text-muted">
                             {{ $k->created_at->format('d M Y H:i') }}
@@ -98,7 +102,7 @@
                         </p>
 
                         {{-- BUTTON BALAS --}}
-                        @auth('penyewa')
+                        @auth
                             <button class="btn btn-sm btn-link p-0"
                                 onclick="document.getElementById('reply-{{ $k->id }}').classList.toggle('d-none')">
                                 Balas
@@ -106,9 +110,9 @@
 
                             {{-- FORM BALAS --}}
                             <form action="{{ route('komentar.store', ['id' => $artikel->id]) }}"
-                                  method="POST"
-                                  class="mt-2 d-none"
-                                  id="reply-{{ $k->id }}">
+                                method="POST"
+                                class="mt-2 d-none"
+                                id="reply-{{ $k->id }}">
                                 @csrf
 
                                 <input type="hidden" name="parent_id" value="{{ $k->id }}">
@@ -125,12 +129,17 @@
                             </form>
                         @endauth
 
+
                         {{-- BALASAN --}}
-                        @if($k->replies && count($k->replies))
+                        @if($k->replies && $k->replies->count())
                             <div class="mt-3 ms-4">
                                 @foreach($k->replies as $r)
                                     <div class="border rounded p-2 mb-2 bg-light">
-                                        <strong>{{ $r->nama }}</strong>
+
+                                        <strong>
+                                            {{ $r->penyewa->nama ?? $r->user->username ?? 'User' }}
+                                        </strong>
+
                                         <br>
                                         <small class="text-muted">
                                             {{ $r->created_at->format('d M Y H:i') }}
@@ -139,6 +148,7 @@
                                         <p class="mt-1 mb-0">
                                             {{ $r->isikomentar }}
                                         </p>
+
                                     </div>
                                 @endforeach
                             </div>
@@ -151,7 +161,6 @@
 
             </div>
         </div>
-
     </div>
 
     {{-- SIDEBAR --}}

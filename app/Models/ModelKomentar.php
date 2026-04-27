@@ -27,6 +27,10 @@ class ModelKomentar extends Model
     {
         return $this->belongsTo(ModelUser::class, 'userid');
     }
+    public function artikel()
+    {
+        return $this->belongsTo(ModelArtikel::class, 'artikelid');
+    }
 
     public function replies()
     {

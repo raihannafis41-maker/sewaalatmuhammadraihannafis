@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Transaksi;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use App\Models\ModelKomentar;
-use App\Models\ModelArtikel;
 
 class KomentarController extends Controller
 {
+    // ======================
+    // LIST KOMENTAR (ADMIN)
+    // ======================
     public function index()
     {
         $data = ModelKomentar::with([
@@ -17,51 +18,48 @@ class KomentarController extends Controller
             'user',
             'replies'
         ])
-            ->whereNull('parent_id')
-            ->latest()
-            ->get();
+        ->whereNull('parent_id')
+        ->latest()
+        ->get();
 
         return view('user.komentar.index', compact('data'));
     }
-    public function store(Request $request)
-{
-    $request->validate([
-        'isikomentar' => 'required'
-    ]);
 
-    ModelKomentar::create([
-        'artikelid' => $request->artikelid,
-        'isikomentar' => $request->isikomentar,
-        'parent_id' => $request->parent_id,
-
-        // AUTO DETECT LOGIN
-        'penyewaid' => auth('penyewa')->id(),
-        'userid' => auth()->id()
-    ]);
-
-    return back()->with('success', 'Komentar berhasil');
-}
-
-    public function show($id)
+    // ======================
+    // STORE KOMENTAR / REPLY
+    // ======================
+    public function store(Request $request, $id = null)
     {
-        $komentar = ModelKomentar::join('artikel', 'komentar.artikelid', '=', 'artikel.id')
-            ->join('penyewa', 'komentar.penyewaid', '=', 'penyewa.id')
-            ->select(
-                'komentar.*',
-                'artikel.judul as judul_artikel',
-                'penyewa.nama as nama_penyewa'
-            )
-            ->where('komentar.id', $id)
-            ->firstOrFail();
+        $request->validate([
+            'isikomentar' => 'required',
+        ]);
 
-        return view('user.komentar.show', compact('komentar'));
+        $artikelId = $id ?? $request->artikelid;
+
+        ModelKomentar::create([
+            'artikelid'   => $artikelId,
+            'isikomentar' => $request->isikomentar,
+            'parent_id'   => $request->parent_id ?? null,
+
+            'penyewaid'   => auth('penyewa')->id(),
+            'userid'      => auth()->id(),
+        ]);
+
+        return redirect()
+            ->route('detailartikel', $artikelId)
+            ->with('success', 'Komentar berhasil');
     }
 
+    // ======================
+    // HAPUS
+    // ======================
     public function destroy($id)
     {
         $komentar = ModelKomentar::findOrFail($id);
         $komentar->delete();
 
-        return redirect()->to('/dashboard/komentar')->with('success', 'Komentar berhasil dihapus');
+        return redirect()
+            ->route('admin.komentar.index')
+            ->with('success', 'Komentar berhasil dihapus');
     }
 }
